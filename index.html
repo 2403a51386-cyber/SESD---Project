@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B1F3A">
+  <meta name="description" content="DMERAS coordinates disaster incidents, emergency resources and relief shelters.">
+  <title>DMERAS | Emergency Response</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="role-select-screen" id="roleSelection">
+    <div class="role-select-panel">
+      <div class="role-select-brand">
+        <span class="brand-mark"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></span>
+        <span><strong>DMERAS</strong><small>Emergency response</small></span>
+      </div>
+      <header class="role-select-heading">
+        <span class="section-kicker">DISASTER RESPONSE WORKSPACE</span>
+        <h1>Choose your role</h1>
+        <p>Select a workspace to open its dashboard. No credentials required.</p>
+      </header>
+      <div class="role-select-grid" role="group" aria-label="Choose a dashboard">
+        <button class="role-option card" type="button" data-role="admin">
+          <span class="role-option-icon admin-role"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+          <span class="role-option-label">AUTHORITY</span>
+          <strong>Admin</strong>
+          <span>Open the command center to manage incidents, resources and shelters.</span>
+          <span class="role-option-link">Open Admin dashboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </button>
+        <button class="role-option card" type="button" data-role="rescue">
+          <span class="role-option-icon rescue-role"><i class="fa-solid fa-truck-medical" aria-hidden="true"></i></span>
+          <span class="role-option-label">FIELD OPERATIONS</span>
+          <strong>Rescue Team</strong>
+          <span>Coordinate response, allocate supplies and update shelter occupancy.</span>
+          <span class="role-option-link">Open Rescue dashboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </button>
+        <button class="role-option card" type="button" data-role="citizen">
+          <span class="role-option-icon citizen-role"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i></span>
+          <span class="role-option-label">COMMUNITY ACCESS</span>
+          <strong>Citizen</strong>
+          <span>Report an incident and view available relief shelters.</span>
+          <span class="role-option-link">Open Citizen dashboard <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </button>
+      </div>
+    </div>
+  </main>
+  <div class="app-shell" id="appShell" hidden>
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="DMERAS home">
+        <span class="brand-mark"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></span>
+        <span><strong>DMERAS</strong><small>Emergency response</small></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="nav-list" id="navigation">
+        <button class="nav-link active" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></button>
+        <button class="nav-link" data-page="report" data-roles="admin,citizen"><i class="fa-solid fa-bullhorn"></i><span>Report incident</span></button>
+        <button class="nav-link" data-page="allocation" data-roles="admin,rescue"><i class="fa-solid fa-truck-fast"></i><span>Resource allocation</span></button>
+        <button class="nav-link" data-page="resources" data-roles="admin"><i class="fa-solid fa-boxes-stacked"></i><span>Resources</span></button>
+        <button class="nav-link" data-page="shelters"><i class="fa-solid fa-house-medical"></i><span>Shelters</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-live"><span class="live-dot"></span><span><strong>System ready</strong><small>Local data storage</small></span></div>
+        <div class="sidebar-version">DMERAS <span>·</span> Course project</div>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+        <div class="breadcrumb"><span>Workspace</span><i class="fa-solid fa-chevron-right"></i><strong id="currentPageLabel">Dashboard</strong></div>
+        <div class="topbar-actions">
+          <div class="user-summary"><span class="user-name" id="headerName"></span><span class="user-role" id="headerRole"></span></div>
+          <button class="button button-outline switch-role-button" id="switchRoleButton" type="button"><i class="fa-solid fa-repeat"></i> Switch role</button>
+          <button class="icon-button theme-toggle" id="themeToggle" aria-label="Switch to dark mode"><i class="fa-solid fa-moon"></i></button>
+          <div class="avatar" aria-hidden="true">DR</div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="page active" id="page-dashboard" aria-labelledby="dashboardTitle">
+          <div class="hero-banner">
+            <div class="hero-copy">
+              <span class="eyebrow"><span class="live-dot"></span> DISASTER RESPONSE COMMAND</span>
+              <h1 id="dashboardTitle">Faster response.<br><span>Smarter allocation.</span> Lives saved.</h1>
+              <p>One clear view of incidents, resources and the people who need help.</p>
+              <button class="button button-light" data-go="report" data-roles="admin,citizen"><i class="fa-solid fa-plus"></i> Report an incident</button>
+            </div>
+            <div class="hero-art" aria-hidden="true"><div class="hero-ring ring-one"></div><div class="hero-ring ring-two"></div><div class="hero-emblem"><i class="fa-solid fa-hand-holding-heart"></i></div><span class="hero-cross cross-one">+</span><span class="hero-cross cross-two">+</span></div>
+            <div class="hero-swoosh"></div>
+          </div>
+
+          <div class="section-heading">
+            <div><span class="section-kicker">SITUATION OVERVIEW</span><h2>Response at a glance</h2></div>
+            <button class="button button-outline admin-only" id="loadDemoBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Load demo data</button>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card stat-red"><span class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></span><span class="stat-label">Active incidents</span><strong id="statActive">0</strong><small><span class="stat-hint">Currently needing response</span></small></article>
+            <article class="stat-card stat-amber"><span class="stat-icon"><i class="fa-solid fa-bell"></i></span><span class="stat-label">Critical incidents</span><strong id="statCritical">0</strong><small><span class="stat-hint">Severity 4 or 5</span></small></article>
+            <article class="stat-card stat-blue"><span class="stat-icon"><i class="fa-solid fa-people-group"></i></span><span class="stat-label">People affected</span><strong id="statPeople">0</strong><small><span class="stat-hint">Across all reports</span></small></article>
+            <article class="stat-card stat-teal"><span class="stat-icon"><i class="fa-solid fa-circle-check"></i></span><span class="stat-label">Resolved</span><strong id="statResolved">0</strong><small><span class="stat-hint">Incidents closed</span></small></article>
+            <article class="stat-card stat-purple"><span class="stat-icon"><i class="fa-solid fa-house-user"></i></span><span class="stat-label">Shelter occupancy</span><strong id="statOccupancy">0%</strong><small><span class="stat-hint">Total capacity in use</span></small></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="card map-card">
+              <div class="card-heading"><div><h3>Live response map</h3><p>Incidents, depots and relief shelters</p></div><span class="live-chip"><span class="live-dot"></span> LIVE</span></div>
+              <div class="map-legend"><span><i class="legend-dot incident-dot"></i>Incident</span><span><i class="legend-dot depot-dot"></i>Depot</span><span><i class="legend-dot shelter-dot"></i>Shelter</span></div>
+              <div id="dashboardMap" class="map" role="application" aria-label="Map showing incidents, depots and shelters"></div>
+            </article>
+            <article class="card chart-card">
+              <div class="card-heading"><div><h3>Incident breakdown</h3><p>Reports by disaster type</p></div><span class="heading-icon"><i class="fa-solid fa-chart-pie"></i></span></div>
+              <div class="chart-wrap"><canvas id="incidentChart" aria-label="Incidents by disaster type"></canvas><div class="chart-empty" id="incidentChartEmpty">No incidents to chart yet</div></div>
+              <div class="chart-footnote"><span class="legend-dot incident-dot"></span> Live incident reports</div>
+            </article>
+            <article class="card stock-card">
+              <div class="card-heading"><div><h3>Resource stock levels</h3><p>Available across all depots</p></div><span class="heading-icon blue-icon"><i class="fa-solid fa-boxes-stacked"></i></span></div>
+              <div class="stock-chart-wrap"><canvas id="stockChart" aria-label="Available stock by resource"></canvas><div class="chart-empty" id="stockChartEmpty">Add a depot or load demo data</div></div>
+            </article>
+            <article class="card recent-card">
+              <div class="card-heading"><div><h3>Recent incidents</h3><p>Latest incoming reports</p></div><button class="text-button" data-go="allocation" data-roles="admin,rescue">View response queue <i class="fa-solid fa-arrow-right"></i></button></div>
+              <div class="table-wrap"><table><thead><tr><th>INCIDENT</th><th>SEVERITY</th><th>PEOPLE</th><th>STATUS</th></tr></thead><tbody id="recentIncidents"></tbody></table><div class="empty-state compact-empty" id="recentEmpty"><i class="fa-solid fa-tower-broadcast"></i><strong>No incidents reported yet</strong><span>New reports will appear here.</span></div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="page-report" data-roles="admin,citizen" aria-labelledby="reportTitle">
+          <div class="page-intro"><span class="section-kicker">COMMUNITY ALERT</span><h1 id="reportTitle">Report an incident</h1><p>Share what is happening so response teams can act quickly.</p></div>
+          <div class="form-layout">
+            <form class="card form-card" id="incidentForm" novalidate>
+              <div class="card-heading"><div><h3>Incident details</h3><p>Fields marked <span class="required">*</span> are required</p></div><span class="heading-icon red-icon"><i class="fa-solid fa-clipboard-list"></i></span></div>
+              <div class="form-grid">
+                <label class="field"><span>Disaster type <span class="required">*</span></span><select id="incidentType" required><option value="">Select type</option><option>Flood</option><option>Fire</option><option>Earthquake</option><option>Cyclone</option><option>Landslide</option><option>Medical emergency</option><option>Other</option></select></label>
+                <label class="field"><span>Severity (1–5) <span class="required">*</span></span><select id="incidentSeverity" required><option value="">Select severity</option><option value="1">1 · Low</option><option value="2">2 · Moderate</option><option value="3">3 · Serious</option><option value="4">4 · High</option><option value="5">5 · Critical</option></select></label>
+                <label class="field"><span>People affected <span class="required">*</span></span><input id="peopleAffected" type="number" min="1" step="1" placeholder="e.g. 120" required><small class="inline-error" id="peopleError"></small></label>
+                <div class="field location-readout"><span>Selected location <span class="required">*</span></span><div class="coordinate-box" id="selectedLocation">Click on the map to pin a location</div><small class="inline-error" id="incidentLocationError"></small></div>
+                <label class="field field-full"><span>Description <span class="required">*</span></span><textarea id="incidentDescription" rows="4" maxlength="500" placeholder="Describe the situation, access conditions or urgent needs..." required></textarea><small class="field-note">Keep it clear and factual (up to 500 characters).</small></label>
+              </div>
+              <small class="inline-error" id="incidentFormError" role="alert"></small>
+              <div class="form-actions"><span class="form-note"><i class="fa-solid fa-lock"></i> Your report is stored on this device.</span><button class="button button-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Submit report</button></div>
+            </form>
+            <article class="card picker-card">
+              <div class="card-heading"><div><h3>Pin the location</h3><p>Click the map to place the incident marker.</p></div><span class="heading-icon"><i class="fa-solid fa-location-dot"></i></span></div>
+              <div id="locationMap" class="map picker-map" role="application" aria-label="Click to select incident location"></div>
+              <div class="picker-tip"><i class="fa-solid fa-circle-info"></i> Choose the closest safe and accurate point.</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="page-allocation" data-roles="admin,rescue" aria-labelledby="allocationTitle">
+          <div class="page-intro allocation-intro"><div><span class="section-kicker">INTELLIGENT DISPATCH</span><h1 id="allocationTitle">Resource allocation</h1><p>Prioritize needs and dispatch the nearest available supplies.</p></div><button class="button button-primary" id="runAllocationBtn"><i class="fa-solid fa-play"></i> Run allocation</button></div>
+          <div class="allocation-summary">
+            <article class="mini-summary"><span class="mini-icon red-icon"><i class="fa-solid fa-list-ol"></i></span><div><small>QUEUE SIZE</small><strong id="queueCount">0</strong></div></article>
+            <article class="mini-summary"><span class="mini-icon amber-icon"><i class="fa-solid fa-fire"></i></span><div><small>HIGH PRIORITY</small><strong id="queueCritical">0</strong></div></article>
+            <article class="mini-summary"><span class="mini-icon teal-icon"><i class="fa-solid fa-truck-fast"></i></span><div><small>READY TO DISPATCH</small><strong id="queueReady">0</strong></div></article>
+          </div>
+          <article class="card queue-card">
+            <div class="card-heading"><div><h3>Ranked response queue</h3><p>Priority score = severity × people affected</p></div><span class="heading-icon red-icon"><i class="fa-solid fa-arrow-down-wide-short"></i></span></div>
+            <div id="allocationQueue" class="queue-list"></div>
+            <div class="empty-state" id="queueEmpty"><i class="fa-solid fa-clipboard-check"></i><strong>All clear for now</strong><span>Reported incidents will be ranked here.</span></div>
+          </article>
+          <article class="card activity-card">
+            <div class="card-heading"><div><h3>Dispatch activity</h3><p>Recent allocation and response events</p></div><span class="heading-icon teal-icon"><i class="fa-solid fa-clock-rotate-left"></i></span></div>
+            <div id="activityLog" class="activity-list"></div>
+            <div class="empty-state compact-empty" id="activityEmpty"><i class="fa-solid fa-clock"></i><strong>No activity recorded</strong><span>Allocation actions will be recorded here.</span></div>
+          </article>
+        </section>
+
+        <section class="page" id="page-resources" data-roles="admin" aria-labelledby="resourcesTitle">
+          <div class="page-intro allocation-intro"><div><span class="section-kicker">SUPPLY NETWORK</span><h1 id="resourcesTitle">Resource depots</h1><p>Monitor emergency inventory across response locations.</p></div><button class="button button-primary admin-only" id="addDepotBtn"><i class="fa-solid fa-plus"></i> Add depot</button></div>
+          <div class="resource-overview" id="resourceOverview"></div>
+          <article class="card depot-card">
+            <div class="card-heading"><div><h3>Depot inventory</h3><p>Available stock levels by location</p></div><span class="heading-icon blue-icon"><i class="fa-solid fa-warehouse"></i></span></div>
+            <div class="table-wrap"><table class="inventory-table"><thead><tr><th>DEPOT</th><th>LOCATION</th><th>FOOD (PORTIONS)</th><th>WATER (L)</th><th>MEDICINE KITS</th><th>AMBULANCES</th><th>BOATS</th><th>ACTIONS</th></tr></thead><tbody id="depotRows"></tbody></table><div class="empty-state" id="depotEmpty"><i class="fa-solid fa-box-open"></i><strong>No depots added yet</strong><span>Add a depot or load demo data to manage stock.</span></div></div>
+          </article>
+        </section>
+
+        <section class="page" id="page-shelters" aria-labelledby="sheltersTitle">
+          <div class="page-intro allocation-intro"><div><span class="section-kicker">SAFE PLACES, STRONGER COMMUNITIES</span><h1 id="sheltersTitle">Relief shelters</h1><p>Track capacity and current occupancy at each relief camp.</p></div><button class="button button-primary admin-only" id="addShelterBtn"><i class="fa-solid fa-plus"></i> Add shelter</button></div>
+          <div class="shelter-summary" id="shelterSummary"></div>
+          <div class="shelter-grid" id="shelterGrid"></div>
+          <div class="empty-state card empty-card" id="shelterEmpty"><i class="fa-solid fa-house-circle-check"></i><strong>No shelters listed yet</strong><span>Add a relief camp or load demo data to see shelter capacity.</span></div>
+        </section>
+      </main>
+      <footer class="footer"><span><i class="fa-solid fa-shield-heart"></i> DMERAS <span class="footer-muted">· Disaster Management & Emergency Resource Allocation System</span></span><span>Designed for faster, coordinated response</span></footer>
+    </div>
+  </div>
+  <div class="sidebar-scrim" id="sidebarScrim"></div>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <dialog class="app-dialog" id="appDialog" aria-labelledby="dialogTitle">
+    <form method="dialog" class="dialog-form">
+      <span class="dialog-icon" id="dialogIcon"><i class="fa-solid fa-circle-question"></i></span>
+      <h2 id="dialogTitle">Please confirm</h2>
+      <p id="dialogMessage"></p>
+      <div class="dialog-actions"><button class="button button-outline" value="cancel">Cancel</button><button class="button button-primary" id="dialogConfirm" value="confirm">Confirm</button></div>
+    </form>
+  </dialog>
+  <dialog class="app-dialog management-dialog" id="managementDialog" aria-labelledby="managementTitle">
+    <form id="managementForm" class="management-form" novalidate>
+      <span class="dialog-icon"><i class="fa-solid fa-location-dot"></i></span>
+      <h2 id="managementTitle">Add location</h2>
+      <p id="managementDescription">Enter details and click the map to set coordinates.</p>
+      <div id="locationFields" class="management-fields">
+        <label class="field"><span>Name</span><input id="managementName" maxlength="80"></label>
+        <small class="inline-error" id="managementNameError"></small>
+        <label class="field"><span>Area</span><input id="managementArea" maxlength="80" placeholder="e.g. Central District"></label>
+        <small class="inline-error" id="managementAreaError"></small>
+        <div id="capacityField"><label class="field"><span>Capacity (people)</span><input id="managementCapacity" type="number" min="0" step="1" value="0"></label><small class="inline-error" id="managementCapacityError"></small></div>
+        <div id="inventoryFields">
+          <label class="field"><span>Food portions</span><input id="stockFood" type="number" min="0" step="1" value="0"></label>
+          <label class="field"><span>Water (L)</span><input id="stockWater" type="number" min="0" step="1" value="0"></label>
+          <label class="field"><span>Medicine kits</span><input id="stockMedicine" type="number" min="0" step="1" value="0"></label>
+          <label class="field"><span>Ambulances</span><input id="stockAmbulances" type="number" min="0" step="1" value="0"></label>
+          <label class="field"><span>Boats</span><input id="stockBoats" type="number" min="0" step="1" value="0"></label>
+          <small class="inline-error" id="managementStockError"></small>
+        </div>
+        <div class="field"><span>Coordinates</span><div class="coordinate-box" id="managementCoordinates">Click on the map to set a location.</div></div>
+        <small class="inline-error" id="managementLocationError"></small>
+        <div id="managementMap" class="map management-map" role="application" aria-label="Click to select location"></div>
+      </div>
+      <div id="restockFields" hidden>
+        <label class="field"><span>Resource</span><select id="restockResource"></select></label>
+        <label class="field"><span>Amount to add (0 or more)</span><input id="restockAmount" type="number" min="0" step="1"></label>
+        <small class="inline-error" id="restockError"></small>
+      </div>
+      <div class="dialog-actions"><button class="button button-outline" id="managementCancel" type="button">Cancel</button><button class="button button-primary" id="managementSubmit" type="submit">Save</button></div>
+    </form>
+  </dialog>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
